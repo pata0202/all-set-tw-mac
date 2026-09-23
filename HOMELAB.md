@@ -10,7 +10,7 @@
 | Cloudflare Access | 由前面的 reverse proxy 負責 |
 | Cron／排程同步 | 不啟用，請在介面手動同步 |
 
-上游檔案皆未修改；homelab 專屬檔案：`apps/worker/wrangler.homelab.toml`、`apps/worker/src/homelab.ts`、`scripts/homelab.mjs`、`homelab/`。
+homelab 專屬檔案：`apps/worker/wrangler.homelab.toml`、`apps/worker/src/homelab.ts`、`scripts/homelab.mjs`、`homelab/`、`apps/web/src/features/settings/components/SyncRunsPanel.svelte`。唯一改到的上游檔案是 `SettingsPage.svelte`（加入同步狀態面板，兩行）。
 
 ## 需求
 
@@ -23,7 +23,7 @@ npm install
 node scripts/homelab.mjs
 ```
 
-首次啟動會自動：產生 `apps/worker/.dev.vars`（含 `CONFIG_ENCRYPTION_KEY`）、編譯 `homelab/ocr`、build 前端、套用 DB migration。服務只監聽 `127.0.0.1:8787`。
+首次啟動會自動：產生 `apps/worker/.dev.vars`（含 `CONFIG_ENCRYPTION_KEY`）、編譯 `homelab/ocr`。每次啟動都會 build 前端、套用 DB migration。服務只監聽 `127.0.0.1:8787`。
 
 **請立刻備份 `apps/worker/.dev.vars` 的 `CONFIG_ENCRYPTION_KEY`**，遺失後所有連接器帳密都無法解密。
 
@@ -43,7 +43,7 @@ launchctl load ~/Library/LaunchAgents/tw.allset.homelab.plist
 
 ## 同步卡住
 
-開 `/homelab/sync` 可以看到正在同步的銀行、電子發票、集保，按「停止」即可清掉鎖。只會清資料庫狀態，已經在跑的瀏覽器要等它自己結束，或重啟服務。
+到「設定 → 同步與通知」的「正在同步」面板，可以看到正在同步的銀行、電子發票、集保（每 5 秒更新），按「停止」即可清掉鎖。只會清資料庫狀態，已經在跑的瀏覽器要等它自己結束，或重啟服務。
 
 ## 瀏覽器無法啟動
 
@@ -60,8 +60,8 @@ rm -rf ~/Library/Caches/.wrangler/chrome
 ## 更新上游
 
 ```bash
-git pull https://github.com/TedLin1993/all-set-tw main
-rm -rf apps/web/dist && node scripts/homelab.mjs
+git pull upstream main
+pm2 restart all-set-tw   # 或重新執行 node scripts/homelab.mjs
 ```
 
 ## 已知限制

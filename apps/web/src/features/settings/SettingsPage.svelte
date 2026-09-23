@@ -25,6 +25,7 @@
   import MobileMore from "./components/MobileMore.svelte";
   import NotificationPanel from "./components/NotificationPanel.svelte";
   import SourceCard from "./components/SourceCard.svelte";
+  import SyncRunsPanel from "./components/SyncRunsPanel.svelte";
   import ConnectorPanel from "./connectors/ConnectorPanel.svelte";
   let {
     api,
@@ -328,6 +329,8 @@
           設定所有連接器共用的預設排程與通知時機。
         </p>
       </section>
+
+      <SyncRunsPanel {api} />
 
       <div
         class="hidden gap-4 md:grid lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]"

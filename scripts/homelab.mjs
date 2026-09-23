@@ -31,8 +31,8 @@ if (!existsSync(devVars)) {
 }
 if (!existsSync(ocrBinary))
   run("swiftc", ["-O", "homelab/ocr.swift", "-o", ocrBinary]);
-if (!existsSync(path.join(root, "apps", "web", "dist")))
-  run("npm", ["run", "build", "-w", "@taiwan-fin-hub/web"]);
+// Always rebuild so a `git pull` + restart picks up frontend changes.
+run("npm", ["run", "build", "-w", "@taiwan-fin-hub/web"]);
 run("npx", ["wrangler", "d1", "migrations", "apply", "DB", "--local", "-c", config]);
 
 const ocrToken = randomBytes(32).toString("hex");
