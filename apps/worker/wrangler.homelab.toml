@@ -1,0 +1,29 @@
+# Homelab (macOS) config: everything runs locally under `wrangler dev`.
+# Started by scripts/homelab.mjs — see HOMELAB.md.
+name = "taiwan-fin-hub"
+main = "src/homelab.ts"
+compatibility_date = "2026-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+assets = { directory = "../web/dist", binding = "ASSETS" }
+# Local mode: Miniflare launches Chromium on this machine.
+browser = { binding = "BROWSER" }
+# No `ai` binding: src/homelab.ts replaces env.AI with Apple Vision OCR.
+# No cron triggers: sync manually from the UI.
+
+[[queues.producers]]
+binding = "SYNC_QUEUE"
+queue = "taiwan-fin-hub-sync"
+
+[[queues.consumers]]
+queue = "taiwan-fin-hub-sync"
+max_batch_size = 1
+max_batch_timeout = 1
+max_concurrency = 1
+
+# Local D1 = a SQLite file under apps/worker/.wrangler/state/.
+[[d1_databases]]
+binding = "DB"
+database_name = "taiwan-fin-hub"
+database_id = "homelab"
+migrations_dir = "../../packages/db/migrations"
