@@ -41,6 +41,18 @@ launchctl load ~/Library/LaunchAgents/tw.allset.homelab.plist
 - 登入保護一定要做（Authelia、Authentik、Cloudflare Tunnel + Access 等）；本服務自身**不驗證身分**。
 - 轉發時**保留原本的 Host**，不要改成 `localhost`，否則 wrangler 的 `/cdn-cgi/local/explorer`（可直接讀取資料庫）會對外開放。保險起見也可以在 proxy 直接封鎖 `/cdn-cgi/`。
 
+## 同步卡住
+
+開 `/homelab/sync` 可以看到正在同步的銀行、電子發票、集保，按「停止」即可清掉鎖。只會清資料庫狀態，已經在跑的瀏覽器要等它自己結束，或重啟服務。
+
+## 瀏覽器無法啟動
+
+錯誤訊息出現 `Failed to launch local browser` 或 `spawn Unknown system error -88`，代表 Miniflare 下載的 Chrome 損毀。刪掉快取後重啟，會自動重新下載：
+
+```bash
+rm -rf ~/Library/Caches/.wrangler/chrome
+```
+
 ## 備份
 
 停止服務後備份 `apps/worker/.wrangler/state/` 與 `apps/worker/.dev.vars`。
